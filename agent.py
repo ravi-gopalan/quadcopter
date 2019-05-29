@@ -91,6 +91,10 @@ class Actor:
         net = layers.Dropout(rate=0.2)(net)
         net = layers.Activation('relu')(net)
         net = layers.BatchNormalization()(net)
+        net = layers.Dense(units=256, kernel_regularizer=layers.regularizers.l2(1e-6))(states)
+        net = layers.Dropout(rate=0.2)(net)
+        net = layers.Activation('relu')(net)
+        net = layers.BatchNormalization()(net)       
         net = layers.Dense(units=128, kernel_regularizer=layers.regularizers.l2(1e-6))(net)
         net = layers.Dropout(rate=0.2)(net)
         net = layers.Activation('relu')(net)
@@ -150,6 +154,10 @@ class Critic:
 
         # Add hidden layer(s) for state pathway
 
+        net_states = layers.Dense(units=256, kernel_regularizer=layers.regularizers.l2(1e-6))(states)
+        net_states = layers.Dropout(rate=0.2)(net_states)
+        net_states = layers.Activation('relu')(net_states)
+        net_states = layers.BatchNormalization()(net_states)
         net_states = layers.Dense(units=256, kernel_regularizer=layers.regularizers.l2(1e-6))(states)
         net_states = layers.Dropout(rate=0.2)(net_states)
         net_states = layers.Activation('relu')(net_states)
@@ -225,7 +233,7 @@ class DDPG():
 
         # Algorithm parameters
         self.gamma = 0.99  # discount factor
-        self.tau = 0.01  # for soft update of target parameters
+        self.tau = 0.001  # for soft update of target parameters
 
     def reset_episode(self):
         self.noise.reset()
